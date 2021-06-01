@@ -29,7 +29,7 @@ This project is released under the Apache License. Please take their licenses in
 ### train
 We recommend using the jupyter notebook [train.ipynb](https://github.com/ProbIOU/PROBIOU-EFFICIENTDET/blob/main/train.ipynb) for training your model with the parameters used on the ProbIoU paper.
 ## Evaluate
-We recommend using the jupyter notebook [evaluate.ipynb](https://github.com/ProbIOU/PROBIOU-EFFICIENTDET/blob/main/evaluate.ipynb) for evaluting the trained models on both IoU and ProbIoU (i.e. 1-ProbIou) metrics.
+We recommend using the jupyter notebook [evaluate.ipynb](https://github.com/ProbIOU/PROBIOU-EFFICIENTDET/blob/main/evaluate.ipynb) for evaluting the trained models on both IoU and ProbIoU (i.e. 1-ProbIouL1) metrics.
 
 ## Results on PASCAL VOC 2007
 | **Loss**          | **IoU50**  | **IoU75**  | **IoU50:95** | **PIoU50** | **PIoU75** | **PIoU50:95** |
