@@ -8,7 +8,7 @@ and the [qubvel/efficientnet](https://github.com/qubvel/efficientnet).
 
 ## About pretrained weights
 * The pretrained EfficientNet weights on imagenet are downloaded from [Callidior/keras-applications/releases](https://github.com/Callidior/keras-applications/releases)
-* The pretrained EfficientDet weights on coco are converted from the official release [google/automl](https://github.com/google/automl).
+* The pretrained EfficientDet weights on PASCAL VOC 2007 will be available soon...
 
 Thanks for their hard work.
 This project is released under the Apache License. Please take their licenses into consideration too when use this project.
@@ -18,7 +18,7 @@ This project is released under the Apache License. Please take their licenses in
 
 ## Train
 ### build dataset 
-1. Pascal VOC 
+1. Pascal VOC (for 2007+20012)
     * Download VOC2007 and VOC2012, copy all image files from VOC2007 to VOC2012.
     * Append VOC2007 train.txt to VOC2012 trainval.txt.
     * Overwrite VOC2012 val.txt by VOC2007 val.txt.
@@ -27,11 +27,11 @@ This project is released under the Apache License. Please take their licenses in
     * Copy all images into datasets/coco/images, all annotations into datasets/coco/annotations
 3. Other types please refer to [fizyr/keras-retinanet](https://github.com/fizyr/keras-retinanet))
 ### train
-We recommend using the jupyter notebook train.ipynb for training your model with the parameters used on the ProbIoU paper.
+We recommend using the jupyter notebook [train.ipynb](https://github.com/ProbIOU/PROBIOU-EFFICIENTDET/blob/main/train.ipynb) for training your model with the parameters used on the ProbIoU paper.
 ## Evaluate
-We recommend using the jupyter notebook evaluate.ipynb for evaluting the trained models on both IoU and ProbIoU (i.e. 1-ProbIou) metrics.
+We recommend using the jupyter notebook [evaluate.ipynb](https://github.com/ProbIOU/PROBIOU-EFFICIENTDET/blob/main/evaluate.ipynb) for evaluting the trained models on both IoU and ProbIoU (i.e. 1-ProbIou) metrics.
 
-## Results
+## Results on PASCAL VOC 2007
 | **Loss**          | **IoU50**  | **IoU75**  | **IoU50:95** | **PIoU50** | **PIoU75** | **PIoU50:95** |
 | ----------------  | ---------- | ---------- | ------------ | ---------- | ---------- | ------------- |
 | ProbIoU           | **72.61**  | 44.24      | 42.60        | **76.70**  | **64.15**  | **56.76**     |
