@@ -1,7 +1,10 @@
-# EfficientDet
+# EfficientDet with ProbIoU
+This repository is a fork from the Tensorflow implementation of EfficientDet used in the "Gaussian Bounding Boxes and Probabilistic Intersection-over-Union for Object Detection"
+(link TBD). It includes several losses for regressing the HBBs, such as: IoU, CIoU, DIoU, GIoU, and the proposed ProbIoU L1 & L2.
+
 This is an implementation of [EfficientDet](https://arxiv.org/pdf/1911.09070.pdf) for object detection on Keras and Tensorflow. 
 The project is based on the official implementation [google/automl](https://github.com/google/automl), [fizyr/keras-retinanet](https://github.com/fizyr/keras-retinanet)
-and the [qubvel/efficientnet](https://github.com/qubvel/efficientnet). 
+and the [qubvel/efficientnet](https://github.com/qubvel/efficientnet).
 
 ## About pretrained weights
 * The pretrained EfficientNet weights on imagenet are downloaded from [Callidior/keras-applications/releases](https://github.com/Callidior/keras-applications/releases)
@@ -11,9 +14,7 @@ Thanks for their hard work.
 This project is released under the Apache License. Please take their licenses into consideration too when use this project.
 
 **Updates**
-- [03/21/2020] Synchronize with the official implementation. [google/automl](https://github.com/google/automl)
-- [03/05/2020] Anchor free version. The accuracy is a little lower, but it's faster and smaller.For details, please refer to [xuannianz/SAPD](https://github.com/xuannianz/SAPD)
-- [02/20/2020] Support quadrangle detection. For details, please refer to [README_quad](README_quad.md)
+- [06/01/2021] First commit.
 
 ## Train
 ### build dataset 
@@ -26,29 +27,15 @@ This project is released under the Apache License. Please take their licenses in
     * Copy all images into datasets/coco/images, all annotations into datasets/coco/annotations
 3. Other types please refer to [fizyr/keras-retinanet](https://github.com/fizyr/keras-retinanet))
 ### train
-* STEP1: `python3 train.py --snapshot imagenet --phi {0, 1, 2, 3, 4, 5, 6} --gpu 0 --random-transform --compute-val-loss --freeze-backbone --batch-size 32 --steps 1000 pascal|coco datasets/VOC2012|datasets/coco` to start training. The init lr is 1e-3.
-* STEP2: `python3 train.py --snapshot xxx.h5 --phi {0, 1, 2, 3, 4, 5, 6} --gpu 0 --random-transform --compute-val-loss --freeze-bn --batch-size 4 --steps 10000 pascal|coco datasets/VOC2012|datasets/coco` to start training when val mAP can not increase during STEP1. The init lr is 1e-4 and decays to 1e-5 when val mAP keeps dropping down.
+We recommend using the jupyter notebook train.ipynb for training your model with the parameters used on the ProbIoU paper.
 ## Evaluate
-1. PASCAL VOC
-    * `python3 eval/common.py` to evaluate pascal model by specifying model path there.
-    * The best evaluation results (score_threshold=0.01, mAP<sub>50</sub>) on VOC2007 test are: 
+We recommend using the jupyter notebook evaluate.ipynb for evaluting the trained models on both IoU and ProbIoU (i.e. 1-ProbIou) metrics.
 
-    | phi | 0 | 1 |
-    | ---- | ---- | ---- |
-    | w/o weighted |  | [0.8029](https://drive.google.com/open?id=1-QkMq56w4dZOTQUnbitF53NKEiNF9F_Q) |
-    | w/ weighted | [0.7892](https://drive.google.com/open?id=1mrqL9rFoYW-4Jc57MsTipkvOTRy_EGfe) |  |
-2. MSCOCO
-    * `python3 eval/coco.py` to evaluate coco model by specifying model path there.
-    
-    | phi | mAP |
-    | ---- | ---- |
-    | 0 | 0.334 [weights](https://drive.google.com/open?id=1MNB5q6rJ4TK_gen3iriu8-ArG9jB8aR9), [results](https://drive.google.com/open?id=1U4Bdk4C7aNF7l4mvhh2Oi8mFpttEwB8s) |
-    | 1 | 0.393 [weights](https://drive.google.com/open?id=11pQznCTi4MaVXqkJmCMcQhphMXurpx5Z), [results](https://drive.google.com/open?id=1NjGr3yG3_Rk1xVCk4sgVelTZNNz_E2vp) |
-    | 2 | 0.424 [weights](https://drive.google.com/open?id=1_yXrOrY0FDnH-d_FQIPbGy4z2ax4aNh8), [results](https://drive.google.com/open?id=1UQP8kDj7tXHC2bs--Aq8x7w7FkVX4xJD) |
-    | 3 | 0.454 [weights](https://drive.google.com/open?id=1VnxoBpEQmm0Z2uO3gjhYDeu-rNirba6c), [results](https://drive.google.com/open?id=1uruTEMPhl_JvbA_T9kCdutzeOR3gFX4g) |
-    | 4 | 0.483 [weights](https://drive.google.com/open?id=1lQvTpnO_mfkHCRpcP28dxU4CWyK3xUzj), [results](https://drive.google.com/open?id=1s4nmgYaPqjbAgDlRF1AVVz6uWKDz7O_i) |
-    
-## Test
-`python3 inference.py` to test your image by specifying image path and model path there. 
-
-![image1](test/demo.jpg) 
+## Results
+| **Loss**          | **IoU50**  | **IoU75**  | **IoU50:95** | **PIoU50** | **PIoU75** | **PIoU50:95** |
+| ----------------  | ---------- | ---------- | ------------ | ---------- | ---------- | ------------- |
+| ProbIoU           | **72.61**  | 44.24      | 42.60        | **76.70**  | **64.15**  | **56.76**     |
+| GIoU              | 70.45      | 43.96      | 42.23        | 74.26      | 62.12      | 55.33         |
+| DIoU              | 70.07      | **44.74**  | 42.64        | 73.52      | 62.26      | 55.31         |
+| CIoU              | 70.53      | 45.35      | **42.94**    | 74.42      | 63.04      | 55.87         |
+| Smooth L1         | 70.20      | 42.02      | 40.72        | 74.09      | 61.26      | 54.49         |

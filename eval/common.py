@@ -176,7 +176,7 @@ def evaluate(
     Args:
         generator: The generator that represents the dataset to evaluate.
         model: The model to evaluate.
-        method: Method for evaluation. Either iou or piou
+        method: Method for evaluation. Either iou or probiou
         iou_threshold: The threshold used to consider when a detection is positive or negative.
         score_threshold: The score confidence threshold to use for detections.
         max_detections: The maximum number of detections to use per image.
@@ -188,8 +188,8 @@ def evaluate(
     """
     if method=='iou':
         from utils.compute_overlap import compute_overlap
-    elif method=='piou':
-        from utils.compute_overlap_piou import compute_overlap
+    elif method=='probiou':
+        from utils.compute_overlap_probiou import compute_overlap
     
     # gather all detections and annotations
     all_detections = _get_detections(generator, model, score_threshold=score_threshold, max_detections=max_detections,
@@ -295,8 +295,8 @@ def evaluate_mAP(
     """
     if method=='iou':
         from utils.compute_overlap import compute_overlap
-    elif method=='piou':
-        from utils.compute_overlap_piou import compute_overlap
+    elif method=='probiou':
+        from utils.compute_overlap_probiou import compute_overlap
     
     # gather all detections and annotations
     all_detections = _get_detections(generator, model, score_threshold=score_threshold, max_detections=max_detections,

@@ -194,7 +194,7 @@ def smooth_l1_quad(sigma=3.0):
 
     return _smooth_l1
 
-''' Probabilistic IoU '''
+''' ProbIoU '''
 
 EPS = 1e-3
 
@@ -218,7 +218,7 @@ def helinger_dist(x1,y1,a1,b1, x2,y2,a2,b2, freezed=False):
     
     return tf.math.sqrt(1 - tf.math.exp(-Db) + EPS)
 
-def get_piou_values(array):
+def get_probiou_values(array):
     # xmin, ymin, xmax, ymax
     xmin = array[:,0]; ymin = array[:,1]
     xmax = array[:,2]; ymax = array[:,3]
@@ -230,36 +230,19 @@ def get_piou_values(array):
     b = tf.math.pow((ymax - ymin), 2.)/12.
     return x, y, a, b
 
-def calc_piou(mode, target, pred, freezed=False):
+def calc_probiou(mode, target, pred, freezed=False):
     
     l1 = helinger_dist(
-                *get_piou_values(target),
-                *get_piou_values(pred),
+                *get_probiou_values(target),
+                *get_probiou_values(pred),
                 freezed=freezed
             )
-    if mode=='piou_l1':
+    if mode=='probioul1':
         return l1
     
-    l2 = tf.math.pow(l1, 2.)
-    if mode=='piou_l2':
-        return l2
-    
-    l3 = - tf.math.log(1. - l2 + EPS)
-    if mode=='piou_l3':
-        return l3
-    
-    # smooth probIoU
-    l1_f = helinger_dist(
-                *get_piou_values(target),
-                *get_piou_values(pred),
-                freezed=True
-            )
-    l1_nf = helinger_dist(
-                *get_piou_values(target),
-                *get_piou_values(pred),
-                freezed=False
-            )
-    return tf.where(l1_nf>0.4, l1_f, l1_nf)
+    l2 = tf.math.pow(l1, 2.)    
+    l2 = - tf.math.log(1. - l2 + EPS)
+    return l2
     
 def calc_diou_ciou(mode, bboxes1, bboxes2):
     # xmin, ymin, xmax, ymax
@@ -353,8 +336,8 @@ def iou_loss(mode, phi, weight, anchor_parameters=None, freeze_iterations=0):
         regression = tf.gather_nd(regression, indices)
         regression_target = tf.gather_nd(regression_target, indices)
         
-        if 'piou' in mode:
-            loss = calc_piou(mode, regression_target, regression, freezed=freeze_iterations>it)
+        if 'probiou' in mode:
+            loss = calc_probiou(mode, regression_target, regression, freezed=freeze_iterations>it)
             it += 1
         elif mode in ('diou', 'ciou'):
             loss = calc_diou_ciou(mode, regression, regression_target)

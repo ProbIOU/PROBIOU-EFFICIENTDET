@@ -297,10 +297,10 @@ def parse_args(args):
     parser.add_argument('--compute-val-loss', help='Compute validation loss during training', dest='compute_val_loss',
                         action='store_true')
     parser.add_argument('--loss', help='Loss function to be used.', default='l1', type=str, \
-                        choices=('l1', 'piou_l1', 'piou_l2', 'piou_l3', 'piou_smooth', 'giou', 'iou', 'diou', 'ciou'))
+                        choices=('l1', 'probioul1', 'probioul2', 'giou', 'iou', 'diou', 'ciou'))
     parser.add_argument('--regression_weight', help='Weight multiplying regression loss.', default=1., type=float)
     parser.add_argument('--use_tfrecords', help='If to use tfrecords. If no tfrecords available, it will create them.', action='store_true')
-    parser.add_argument('--freeze_iterations', help='Iterations to freezed W and H learning.', default=0, type=int)
+    parser.add_argument('--freeze_iterations', help='Iterations to freezed W and H learning. THIS IS ENTIRELY EXPERIMENTAL!', default=0, type=int)
     
     # Fit generator arguments
     parser.add_argument('--multiprocessing', help='Use multiprocessing in fit_generator.', action='store_true')
@@ -373,7 +373,7 @@ def main(args=None):
                                    freeze_iterations=args.freeze_iterations)
     
     with strategy.scope():
-        if 'piou' in args.loss:
+        if 'probiou' in args.loss:
             optimizer = Adam(lr=args.lr, epsilon=1e-3, clipvalue=10.)
         else:
             optimizer = Adam(lr=args.lr)

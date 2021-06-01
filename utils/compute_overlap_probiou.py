@@ -20,14 +20,14 @@ def bhatacharyya_dist(x1,y1,a1,b1, x2,y2,a2,b2):
            1/2.*np.log((a1+a2)*(b1+b2)+EPS) - 1/4.*np.log(a1*a2*b1*b2+EPS)
 
 @jit(nopython=True)
-def compute_piou(Db):
+def compute_probiou(Db):
     '''
     Dh = sqrt(1 - exp(-Db))
     '''
     return 1. - np.sqrt(1. - np.exp(-Db))
 
 @jit(nopython=True)
-def get_piou_values(array):
+def get_probiou_values(array):
     x = (array[2] + array[0])/2.
     y = (array[3] + array[1])/2.
     a = np.power(array[2] - array[0], 2.)/12.
@@ -50,13 +50,13 @@ def compute_overlap(boxes, query_boxes):
     
     for k in range(K):
         
-        target_vals = get_piou_values(query_boxes[k])
+        target_vals = get_probiou_values(query_boxes[k])
         
         for n in range(N):
             
-            overlaps[n, k] = compute_piou(bhatacharyya_dist(
+            overlaps[n, k] = compute_probiou(bhatacharyya_dist(
                 *target_vals,
-                *get_piou_values(boxes[n])
+                *get_probiou_values(boxes[n])
             ))
             
     return overlaps
